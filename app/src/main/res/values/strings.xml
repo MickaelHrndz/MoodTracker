@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MoodTracker</string>
+    <string name="comment">Comment your mood</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="history_row_text">%d days ago</string>
+</resources>
