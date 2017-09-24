@@ -10,9 +10,15 @@ import android.util.Log;
 import com.hernandez.mickael.moodtracker.model.DayMood;
 import com.hernandez.mickael.moodtracker.model.Mood;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Locale;
+
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Created by Mickael Hernandez on 23/09/2017.
@@ -49,7 +55,7 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<DayMood> getHistory() {
+    public ArrayList<DayMood> getHistory() { // used in HistoryActivity
         ArrayList<DayMood> moodsArrayList = new ArrayList<DayMood>();
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -74,7 +80,7 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
         return moodsArrayList;
     }
 
-    public ArrayList<DayMood> getAllMoods() {
+    public ArrayList<DayMood> getAllMoods() { // Used in Chart
         ArrayList<DayMood> moodsArrayList = new ArrayList<DayMood>();
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -98,18 +104,48 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
     }
 
     public boolean addMood(DayMood mood) {
+        long res;
         SQLiteDatabase db = this.getWritableDatabase();
         // Creating content values
         ContentValues values = new ContentValues();
         values.put(KEY_MOOD, mood.getMood().getId());
         values.put(KEY_COMMENT, mood.getComment());
-        values.put(KEY_DATE, mood.getDate().getTime());
-        // insert values in the table
-        long insert = db.insert(HISTORY_TABLE_NAME, null, values);
-        if(insert == -1){
+        int index = isDaySaved(mood.getDate());
+        if(index > -1) {
+            res = db.update(HISTORY_TABLE_NAME, values, KEY_ID + "=" + index, null); // updates
+        } else {
+            values.put(KEY_DATE, mood.getDate().getTime());
+            // insert values in the table
+            res = db.insert(HISTORY_TABLE_NAME, null, values);
+        }
+        if (res == -1) {
             return false;
         } else {
             return true;
         }
+    }
+
+    private int isDaySaved(Date pDate){ // returns -1 if not saved, or the id
+        String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd", Locale.FRANCE);
+        int res = -1;
+        boolean found = false;
+        if(c.moveToFirst()){
+            do {
+                Date date = new Date(c.getLong(c.getColumnIndex(KEY_DATE)));
+                if(fmt.format(pDate).equals(fmt.format(date))){ // if this element's date is the same day
+                    res = c.getInt(c.getColumnIndex(KEY_ID));
+                    found = true;
+                }
+            } while(c.moveToNext() && !found);
+        }
+        c.close();
+        return res;
+    }
+
+    private boolean isSameDay(Date pDate1, Date pDate2) {
+        return DAYS.convert(pDate1.getTime() - pDate2.getTime(), MILLISECONDS) > 0;
     }
 }

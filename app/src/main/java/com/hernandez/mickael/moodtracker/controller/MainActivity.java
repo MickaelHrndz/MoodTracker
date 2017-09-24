@@ -31,6 +31,9 @@ public class MainActivity extends FragmentActivity {
     /** History activity code for the intent **/
     public static final int HISTORY_ACTIVITY_REQUEST_CODE = 1;
 
+    /** SharedPreferences key for the selected mood **/
+    public static final String PREFERENCES_KEY_MOOD = "mood";
+
     /** The SQLite database custom object to handle data saving **/
     private HistoryOpenHelper mHistory;
 
@@ -110,6 +113,7 @@ public class MainActivity extends FragmentActivity {
         mPager = (VerticalViewPager) findViewById(R.id.pager);
         mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
         mPager.setAdapter(mPagerAdapter);
+        mPager.setCurrentItem(mSharedPrefs.getInt(PREFERENCES_KEY_MOOD, 3));
     }
 
     /**
@@ -130,6 +134,12 @@ public class MainActivity extends FragmentActivity {
         public int getCount() {
             return NUM_PAGES;
         }
+    }
+
+    @Override
+    public void onPause() {
+        mSharedPrefs.edit().putInt(PREFERENCES_KEY_MOOD, mPager.getCurrentItem()).apply();
+        super.onPause();
     }
     // TODO : Everytime the user switches mood, put the mood in a general attribute and save it to sharedprefs too
     private Mood getCurrentMood(){
