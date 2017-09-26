@@ -1,4 +1,4 @@
-package com.hernandez.mickael.moodtracker.view;
+package com.hernandez.mickael.moodtracker.controller;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,8 +42,7 @@ public class MoodFragment extends Fragment {
                 layoutId = R.layout.fragment_mood_superhappy;
                 break;
         }
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
+        return (ViewGroup) inflater.inflate(
                 layoutId, container, false);
-        return rootView;
     }
 }

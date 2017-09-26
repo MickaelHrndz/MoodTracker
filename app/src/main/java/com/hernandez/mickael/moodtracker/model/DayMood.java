@@ -20,18 +20,6 @@ public class DayMood {
         mComment = "";
     }
 
-    public DayMood(Mood pMood, String pComment){
-        mMood = pMood;
-        mComment = pComment;
-        mDate = Calendar.getInstance().getTime();
-    }
-
-    public DayMood(Mood pMood, Date pDate, String pComment){
-        mMood = pMood;
-        mDate = pDate;
-        mComment = pComment;
-    }
-
     public Mood getMood() {
         return mMood;
     }
