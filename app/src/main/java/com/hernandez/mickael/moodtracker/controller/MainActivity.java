@@ -8,28 +8,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.hernandez.mickael.moodtracker.R;
-import com.hernandez.mickael.moodtracker.model.Mood;
 import com.hernandez.mickael.moodtracker.view.VerticalViewPager;
 
-import java.util.Calendar;
-import java.util.Date;
-
-import static java.lang.Long.valueOf;
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity { // Main activity
 
     /** The number of pages (moods) to show **/
     private static final int NUM_PAGES = 5;
@@ -46,9 +36,6 @@ public class MainActivity extends FragmentActivity {
     /** The media player to play sounds **/
     private MediaPlayer mMediaPlayer;
 
-    /** The Date object created at the beginning **/
-    private Date mDate;
-
     /** The SQLite database custom object to handle data saving **/
     private HistoryOpenHelper mHistory = new HistoryOpenHelper(this);
 
@@ -64,9 +51,6 @@ public class MainActivity extends FragmentActivity {
     /** The custom pager adapter **/
     private ScreenSlidePagerAdapter mPagerAdapter;
 
-    /** The boolean used to avoid sounds being played when creating the first fragments **/
-    private boolean mIsCreated = false;
-
     /** AlertDialog builder to let the user add a comment to its mood **/
     private AlertDialog.Builder mBuilder;
 
@@ -79,15 +63,12 @@ public class MainActivity extends FragmentActivity {
     //public static final String PREFS_CODE = "MoodTracker";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { // On activity creation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         mSharedPrefs = getPreferences(MODE_PRIVATE);
 
-        mDate = new Date();
-
-        // UI views links
         /* UI Buttons from the main activity */
         ImageButton commentBtn = (ImageButton) findViewById(R.id.comment_button);
         ImageButton historyBtn = (ImageButton) findViewById(R.id.history_button);
@@ -156,7 +137,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    public void onPause() {
+    public void onPause() { // On activity pause
         // saves current mood in SharedPreferences
         mSharedPrefs.edit().putInt(PREFERENCES_KEY_MOOD, mPager.getCurrentItem()).apply();
         // saves current mood in database
@@ -165,17 +146,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void playMoodSound(int position){ // Plays the sound corresponding to the selected mood
-        //if(mIsCreated) {
-             mMediaPlayer = MediaPlayer.create(this, mSoundArray[position]);
-            mMediaPlayer.start();
-        //}
+        mMediaPlayer = MediaPlayer.create(this, mSoundArray[position]);
+        mMediaPlayer.start();
     }
 
-    /**
-     * A pager adapter that represents [NUM_PAGES] ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter { // custom pageradapter class using MoodFragment
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }

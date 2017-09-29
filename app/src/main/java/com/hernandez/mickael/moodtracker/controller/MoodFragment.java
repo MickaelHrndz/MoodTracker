@@ -12,18 +12,18 @@ import com.hernandez.mickael.moodtracker.R;
  * Created by Mickael Hernandez on 22/09/2017.
  */
 
-public class MoodFragment extends Fragment {
+public class MoodFragment extends Fragment { // Fragment used in MainActivity's custom PagerAdapter
 
-    public static MoodFragment newInstance(int num) {
+    public static MoodFragment newInstance(int num) { // returns a new custom instance of the class
         Bundle arguments = new Bundle();
-        arguments.putInt("mood", num);
+        arguments.putInt("mood", num); // mood id used to set the right layout
         MoodFragment fragment = new MoodFragment();
         fragment.setArguments(arguments);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) { // on new instance, set the corresponding layout
         int layoutId = R.layout.fragment_mood_sad;
         switch(getArguments().getInt("mood")){
             case 0:

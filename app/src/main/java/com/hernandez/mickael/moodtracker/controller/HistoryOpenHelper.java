@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.hernandez.mickael.moodtracker.model.DayMood;
 import com.hernandez.mickael.moodtracker.model.Mood;
@@ -19,23 +18,23 @@ import java.util.Locale;
  * Created by Mickael Hernandez on 23/09/2017.
  */
 
-class HistoryOpenHelper extends SQLiteOpenHelper {
+class HistoryOpenHelper extends SQLiteOpenHelper { // Custom class holding a custom SQLite table
 
-    private static final int DATABASE_VERSION = 2;
-    private static final String HISTORY_TABLE_NAME = "history";
-    private static final String KEY_ID = "_id";
-    private static final String KEY_MOOD = "mood";
-    private static final String KEY_DATE = "date";
-    private static final String KEY_COMMENT = "comment";
+    private static final int DATABASE_VERSION = 2; // SQLite Database version
+    private static final String HISTORY_TABLE_NAME = "history"; // Table name
+    private static final String KEY_ID = "_id"; // Primary key (int autoincrement)
+    private static final String KEY_MOOD = "mood"; // Mood id (int)
+    private static final String KEY_DATE = "date";  // Date.getTime() (long)
+    private static final String KEY_COMMENT = "comment"; // Mood comment (String)
 
     private static final String HISTORY_TABLE_CREATE =
             "CREATE TABLE " + HISTORY_TABLE_NAME + " (" +
                     KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     KEY_MOOD + " INTEGER, " +
                     KEY_DATE + " INTEGER, " +
-                    KEY_COMMENT + " TEXT );";
+                    KEY_COMMENT + " TEXT );"; // SQL query for table creation
 
-    HistoryOpenHelper(Context context) {
+    HistoryOpenHelper(Context context) { // Constructor
         super(context, HISTORY_TABLE_NAME, null, DATABASE_VERSION);
     }
 
@@ -50,7 +49,7 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    ArrayList<DayMood> getHistory() { // used in HistoryActivity
+    ArrayList<DayMood> getHistory() { // used in HistoryActivity, retrieves the last [HISTORY_MAX_ROWS] moods
         ArrayList<DayMood> moodsArrayList = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -72,7 +71,7 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
         return moodsArrayList;
     }
 
-    public ArrayList<DayMood> getAllMoods() { // Used in Chart
+    /*public ArrayList<DayMood> getAllMoods() { // Used in Chart
         ArrayList<DayMood> moodsArrayList = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -91,9 +90,9 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
         }
         c.close();
         return moodsArrayList;
-    }
+    }*/
 
-    private int isDaySaved(Date pDate){ // returns -1 if not saved, or the id
+    private int isDaySaved(Date pDate){ // returns -1 if not found, or the id
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -113,7 +112,7 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean addDayMood(DayMood mood) {
+    /*public boolean addDayMood(DayMood mood) { // Used before, dropped for updateMood and updateComment
         SQLiteDatabase db = this.getWritableDatabase();
         // Creating content values
         ContentValues values = new ContentValues();
@@ -127,7 +126,7 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
             // insert values in the table
             return db.insert(HISTORY_TABLE_NAME, null, values) > 0;
         }
-    }
+    }*/
 
     boolean updateMood(int idMood){ // updates today's mood
         Date now = new Date();
@@ -144,6 +143,7 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
         }
     }
 
+
     boolean updateComment(String comment){ // updates today's comment
         Date now = new Date();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -157,8 +157,4 @@ class HistoryOpenHelper extends SQLiteOpenHelper {
             return db.insert(HISTORY_TABLE_NAME, null, values) > 0; // insert new row
         }
     }
-
-    /* private boolean isSameDay(Date pDate1, Date pDate2) {
-        return DAYS.convert(pDate1.getTime() - pDate2.getTime(), MILLISECONDS) > 0;
-    }**/
 }

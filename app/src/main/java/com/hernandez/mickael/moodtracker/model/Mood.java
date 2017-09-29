@@ -15,7 +15,7 @@ public enum Mood {
     DISAPPOINTED(1L, R.color.warm_grey),
     NORMAL(2L, R.color.cornflower_blue_65),
     HAPPY(3L, R.color.light_sage),
-    SUPERHAPPY(4L, R.color.banana_yellow),
+    SUPER_HAPPY(4L, R.color.banana_yellow),
     UNKNOWN(-1L, R.color.faded_red);
 
     private static final Map<Long, Mood> byId = new HashMap<Long, Mood>();

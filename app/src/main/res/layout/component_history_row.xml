@@ -8,7 +8,6 @@
         android:layout_height="85dp"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:text="@string/history_row_text"
         android:padding="5dp"
         />
 

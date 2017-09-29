@@ -1,9 +1,7 @@
 package com.hernandez.mickael.moodtracker.controller;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,6 @@ import com.hernandez.mickael.moodtracker.model.DayMood;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
@@ -27,18 +24,14 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * Created by Mickael Hernandez on 24/09/2017.
  */
 
-public class HistoryAdapter extends ArrayAdapter<DayMood> {
+public class HistoryAdapter extends ArrayAdapter<DayMood> { // Custom adapter (using DayMood) for the ListView in HistoryActivity
 
-    /*public HistoryAdapter(Context context, int textViewResourceId) {
-        super(context, textViewResourceId);
-    }*/
-
-    public HistoryAdapter(Context context, ArrayList<DayMood> items) {
+    public HistoryAdapter(Context context, ArrayList<DayMood> items) { // Constructor
         super(context, R.layout.component_history_row, items);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) { // method called on creation of every row
         View v = convertView;
         if (v == null) {
             LayoutInflater vi;
@@ -55,7 +48,23 @@ public class HistoryAdapter extends ArrayAdapter<DayMood> {
 
         if (text != null) {
             long daysAgo = DAYS.convert(today.getTime() - dm.getDate().getTime(), MILLISECONDS);
-            String str = String.format(getContext().getResources().getString(R.string.history_row_text), daysAgo);
+            String str;
+            switch((int)daysAgo){
+                case 0:
+                    str = getContext().getResources().getString(R.string.history_row_today);
+                    break;
+                case 1:
+                    str = getContext().getResources().getString(R.string.history_row_yesterday);
+                    break;
+                case 2:
+                    str = getContext().getResources().getString(R.string.history_row_bfyesterday);
+                    break;
+                default:
+                    str = String.format(getContext().getResources().getString(R.string.history_row_xdaysago), daysAgo);
+            }
+            if(daysAgo >= 7){
+                str = getContext().getResources().getString(R.string.history_row_weekago);
+            }
             text.setText(str);
         }
 

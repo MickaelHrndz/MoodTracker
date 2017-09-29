@@ -8,40 +8,30 @@ import com.hernandez.mickael.moodtracker.R;
 import com.hernandez.mickael.moodtracker.model.DayMood;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity { // Activity that displays a history of the last days moods
 
+    /** Max number of rows there can be in the history **/
     public static final int HISTORY_MAX_ROWS = 7;
 
-    /** The SQLite database custom object to handle data saving **/
-    private HistoryOpenHelper mHistory;
-
-    /** The mood array to hold the history **/
-    private ArrayList<DayMood> mDayMoods;
-
-    /** The history list component **/
-    private ListView mListView;
-
-    /** The adapter to populate the listview **/
-    private HistoryAdapter mHistoryAdapter;
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) { // On activity creation
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
-        mListView = (ListView)findViewById(R.id.history_listview);
+
+        /* The history list component */
+        ListView listView = (ListView) findViewById(R.id.history_listview);
 
         // History data
-        mHistory = new HistoryOpenHelper(this);
-        mDayMoods = mHistory.getHistory();
-        /*while(mDayMoods.size() > HISTORY_MAX_ROWS){ // deleting
-            mDayMoods.remove(0);
-        }
-        Collections.reverse(mDayMoods); // newest elements first*/
 
-        // Using custom adapter
-        mHistoryAdapter = new HistoryAdapter(this, mDayMoods);
-        mListView.setAdapter(mHistoryAdapter);
+        /* The SQLite database custom object to handle data saving */
+        HistoryOpenHelper history = new HistoryOpenHelper(this);
+
+        /* The mood array to hold the history */
+        ArrayList<DayMood> dayMoods = history.getHistory();
+
+        /* The custom adapter to populate the ListView */
+        HistoryAdapter historyAdapter = new HistoryAdapter(this, dayMoods);
+        listView.setAdapter(historyAdapter);
     }
 }

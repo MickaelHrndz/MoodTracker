@@ -1,7 +1,5 @@
 package com.hernandez.mickael.moodtracker.model;
 
-import android.text.format.DateUtils;
-
 import java.util.Calendar;
 import java.util.Date;
 
@@ -9,7 +7,8 @@ import java.util.Date;
  * Created by Mickael Hernandez on 23/09/2017.
  */
 
-public class DayMood {
+public class DayMood { // Represents a mood for a specific day, that can be commented
+
     private Mood mMood;
     private Date mDate;
     private String mComment;
@@ -19,6 +18,9 @@ public class DayMood {
         mDate = Calendar.getInstance().getTime(); // Today
         mComment = "";
     }
+
+
+    // Getters
 
     public Mood getMood() {
         return mMood;
@@ -31,6 +33,8 @@ public class DayMood {
     public String getComment() {
         return mComment;
     }
+
+    // Setters
 
     public void setMood(Mood mood) {
         mMood = mood;
