@@ -6,16 +6,18 @@ import android.widget.ListView;
 
 import com.hernandez.mickael.moodtracker.R;
 import com.hernandez.mickael.moodtracker.model.DayMood;
+import com.hernandez.mickael.moodtracker.model.HistoryOpenHelper;
 
 import java.util.ArrayList;
 
-public class HistoryActivity extends AppCompatActivity { // Activity that displays a history of the last days moods
+/** Activity that displays a history of the last days moods */
+public class HistoryActivity extends AppCompatActivity {
 
-    /** Max number of rows there can be in the history **/
+    /** Max number of rows there can be in the history */
     public static final int HISTORY_MAX_ROWS = 7;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // On activity creation
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 

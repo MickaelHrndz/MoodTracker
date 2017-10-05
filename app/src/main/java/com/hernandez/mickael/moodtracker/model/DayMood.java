@@ -7,13 +7,19 @@ import java.util.Date;
  * Created by Mickael Hernandez on 23/09/2017.
  */
 
-public class DayMood { // Represents a mood for a specific day, that can be commented
+/** Represents a mood for a specific day, that can hold a comment */
+public class DayMood {
 
+    /** The mood */
     private Mood mMood;
+
+    /** The date */
     private Date mDate;
+
+    /** The comment */
     private String mComment;
 
-    public DayMood(){ // Constructor by default
+    DayMood(){ // Constructor by default
         mMood = Mood.NORMAL;
         mDate = Calendar.getInstance().getTime(); // Today
         mComment = "";
@@ -40,11 +46,11 @@ public class DayMood { // Represents a mood for a specific day, that can be comm
         mMood = mood;
     }
 
-    public void setDate(Date date) {
+    void setDate(Date date) {
         mDate = date;
     }
 
-    public void setComment(String comment) {
+    void setComment(String comment) {
         mComment = comment;
     }
 }

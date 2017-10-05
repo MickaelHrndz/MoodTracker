@@ -24,14 +24,15 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
  * Created by Mickael Hernandez on 24/09/2017.
  */
 
-public class HistoryAdapter extends ArrayAdapter<DayMood> { // Custom adapter (using DayMood) for the ListView in HistoryActivity
+/** Custom adapter (using DayMood) for the ListView in HistoryActivity */
+class HistoryAdapter extends ArrayAdapter<DayMood> {
 
-    public HistoryAdapter(Context context, ArrayList<DayMood> items) { // Constructor
+    HistoryAdapter(Context context, ArrayList<DayMood> items) { // Constructor
         super(context, R.layout.component_history_row, items);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) { // method called on creation of every row
+    public View getView(int position, View convertView, ViewGroup parent) {
         View v = convertView;
         if (v == null) {
             LayoutInflater vi;

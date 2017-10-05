@@ -1,5 +1,8 @@
 package com.hernandez.mickael.moodtracker.controller;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,57 +20,79 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.hernandez.mickael.moodtracker.R;
+import com.hernandez.mickael.moodtracker.model.HistoryOpenHelper;
 import com.hernandez.mickael.moodtracker.view.VerticalViewPager;
 
-public class MainActivity extends FragmentActivity { // Main activity
+import java.util.Calendar;
 
-    /** The number of pages (moods) to show **/
-    private static final int NUM_PAGES = 5;
+/** Main activity */
+public class MainActivity extends FragmentActivity {
 
-    /** History activity code for the intent **/
+    /** The number of pages (moods) to show */
+    public static final int NUM_PAGES = 5;
+
+    /** History activity code for the intent */
     public static final int HISTORY_ACTIVITY_REQUEST_CODE = 1;
 
-    /** SharedPreferences key for the selected mood **/
+    /** Key to the shared preferences */
+    public static final String PREFERENCES_KEY = "MoodTracker";
+
+    /** SharedPreferences key for the selected mood */
     public static final String PREFERENCES_KEY_MOOD = "mood";
 
-    /** The sounds id array for the moods **/
+    /** The sounds id array for the moods */
     public int[] mSoundArray = { R.raw.sad, R.raw.disappointed, R.raw.normal, R.raw.happy, R.raw.super_happy };
 
-    /** The media player to play sounds **/
+    /** The media player to play sounds */
     private MediaPlayer mMediaPlayer;
 
-    /** The SQLite database custom object to handle data saving **/
+    /** The SQLite database custom object to handle data saving */
     private HistoryOpenHelper mHistory = new HistoryOpenHelper(this);
 
-    /** The object which holds preferences, in this case, the selected mood **/
+    /** The object which holds preferences, in this case, the selected mood */
     private SharedPreferences mSharedPrefs;
+
+    /** The alarm manager used to schedule an intent at a certain hour */
+    private AlarmManager mAlarmMgr;
+
+    /** The intent used by the alarm manager */
+    private PendingIntent mAlarmIntent;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      *  and next wizard steps.
-     **/
+     */
     private VerticalViewPager mPager;
 
-    /** The custom pager adapter **/
+    /** The custom pager adapter */
     private ScreenSlidePagerAdapter mPagerAdapter;
 
-    /** AlertDialog builder to let the user add a comment to its mood **/
+    /** AlertDialog builder to let the user add a comment to its mood */
     private AlertDialog.Builder mBuilder;
 
-    /** AlertDialog object **/
+    /** AlertDialog object */
     private AlertDialog mDialog;
 
-    /** Text field to enter a comment **/
+    /** Text field to enter a comment */
     private EditText mCommentEditText;
 
     //public static final String PREFS_CODE = "MoodTracker";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) { // On activity creation
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mSharedPrefs = getPreferences(MODE_PRIVATE);
+        mSharedPrefs = getApplicationContext().getSharedPreferences(PREFERENCES_KEY, MODE_PRIVATE);
+
+        // Scheduling alarm to save mood everyday
+        Calendar mResetTime = Calendar.getInstance();
+        mResetTime.set(Calendar.HOUR_OF_DAY, 13);
+        mResetTime.set(Calendar.MINUTE, 32);
+        mAlarmMgr = (AlarmManager)MainActivity.this.getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+        mAlarmIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+        mAlarmMgr.set(AlarmManager.RTC, mResetTime.getTimeInMillis(), mAlarmIntent);
 
         /* UI Buttons from the main activity */
         ImageButton commentBtn = (ImageButton) findViewById(R.id.comment_button);
@@ -136,22 +161,44 @@ public class MainActivity extends FragmentActivity { // Main activity
         });
     }
 
-    @Override
-    public void onPause() { // On activity pause
+    /** Saves the current mood in both SharedPreferences and SQLite database */
+    private void saveMood(){
         // saves current mood in SharedPreferences
         mSharedPrefs.edit().putInt(PREFERENCES_KEY_MOOD, mPager.getCurrentItem()).apply();
         // saves current mood in database
         mHistory.updateMood(mPager.getCurrentItem());
+    }
+
+    /** Sets the current mood according to the id passed, saves it */
+    public void setMood(int mood){
+        mPager.setCurrentItem(mood);
+        saveMood();
+    }
+
+    @Override
+    public void onPause() {
+        saveMood();
         super.onPause();
     }
 
-    private void playMoodSound(int position){ // Plays the sound corresponding to the selected mood
+    /** Plays the sound corresponding to the selected mood */
+    private void playMoodSound(int position){
         mMediaPlayer = MediaPlayer.create(this, mSoundArray[position]);
         mMediaPlayer.start();
     }
 
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter { // custom pageradapter class using MoodFragment
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
+    /** Returns comment string from today's mood */
+    public String getTodayComment(){
+        return mHistory.getHistory().get(0).getComment();
+    }
+
+     /*public void resetMood(){
+        saveMood(Mood.DEFAULT_MOOD);
+    }*/
+
+    /** custom pageradapter class using MoodFragment */
+    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
+        ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
