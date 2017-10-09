@@ -1,7 +1,6 @@
 package com.hernandez.mickael.moodtracker.controller;
 
 import android.support.test.rule.ActivityTestRule;
-import android.widget.ListView;
 
 import com.hernandez.mickael.moodtracker.R;
 

@@ -7,13 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.hernandez.mickael.moodtracker.controller.HistoryActivity;
-import com.hernandez.mickael.moodtracker.model.DayMood;
-import com.hernandez.mickael.moodtracker.model.Mood;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 /**
  * Created by Mickael Hernandez on 23/09/2017.
@@ -70,6 +70,7 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
         // looping through all rows and adding to list
+        Date previousDate = null;
         int i = 0;
         if (c.moveToLast()) {
             do {
@@ -77,8 +78,15 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
                 mood.setMood(Mood.getById(c.getLong(c.getColumnIndex(KEY_MOOD)))); // Mood
                 mood.setDate(new Date(c.getLong(c.getColumnIndex(KEY_DATE)))); // Date
                 mood.setComment(c.getString(c.getColumnIndex(KEY_COMMENT))); // Comment
+                if(previousDate != null){
+                    long daysBetween = DAYS.convert(mood.getDate().getTime() - previousDate.getTime(), MILLISECONDS);
+                    if(daysBetween > 1){ // if there's more than a day between two dates, add a default DayMood between
+                        moodsArrayList.add(DayMood.getDefaultDayMood(new Date(previousDate.getTime() + DAYS.toMillis(1))));
+                    }
+                }
                 // adding to moods list
                 moodsArrayList.add(mood);
+                previousDate = mood.getDate();
                 i++;
             } while (c.moveToPrevious() && i < HistoryActivity.HISTORY_MAX_ROWS); // getting the first [HISTORY_MAX_ROWS] moods
         }

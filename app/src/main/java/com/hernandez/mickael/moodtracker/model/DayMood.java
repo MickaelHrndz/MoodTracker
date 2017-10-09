@@ -3,6 +3,8 @@ package com.hernandez.mickael.moodtracker.model;
 import java.util.Calendar;
 import java.util.Date;
 
+import static java.lang.Long.valueOf;
+
 /**
  * Created by Mickael Hernandez on 23/09/2017.
  */
@@ -25,7 +27,12 @@ public class DayMood {
         mComment = "";
     }
 
-
+    public static DayMood getDefaultDayMood(Date date) {
+        DayMood dayMood = new DayMood();
+        dayMood.setMood(Mood.getById(valueOf(Mood.DEFAULT_MOOD)));
+        dayMood.setDate(date);
+        return dayMood;
+    }
     // Getters
 
     public Mood getMood() {
