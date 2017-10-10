@@ -61,7 +61,7 @@ class HistoryAdapter extends ArrayAdapter<DayMood> {
                     str = getContext().getResources().getString(R.string.history_row_bfyesterday);
                     break;
                 default:
-                    str = String.format(getContext().getResources().getString(R.string.history_row_xdaysago), daysAgo);
+                    str = String.format(getContext().getResources().getString(R.string.history_row_xdaysago), numberInLetters((int)daysAgo));
             }
             if(daysAgo >= 7){
                 str = getContext().getResources().getString(R.string.history_row_weekago);
@@ -80,6 +80,26 @@ class HistoryAdapter extends ArrayAdapter<DayMood> {
         }
 
         return v;
+    }
+
+    /** Converts number in whole letters from 3 to 6 */
+    private String numberInLetters(int n){
+        String res = "";
+        switch(n){
+            case 3:
+                res = getContext().getResources().getString(R.string.three);
+                break;
+            case 4:
+                res = getContext().getResources().getString(R.string.four);
+                break;
+            case 5:
+                res = getContext().getResources().getString(R.string.five);
+                break;
+            case 6:
+                res = getContext().getResources().getString(R.string.six);
+                break;
+        }
+        return res;
     }
 
 }

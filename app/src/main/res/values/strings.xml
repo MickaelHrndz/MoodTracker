@@ -1,11 +1,15 @@
 <resources>
     <string name="app_name">MoodTracker</string>
     <string name="comment">Commentez votre humeur</string>
-    <string name="ok">OK</string>
+    <string name="ok">Valider</string>
     <string name="cancel">Annuler</string>
-    <string name="history_row_xdaysago">Il y a %d jours</string>
+    <string name="history_row_xdaysago">Il y a %s jours</string>
     <string name="history_row_today">Aujourd\'hui</string>
     <string name="history_row_yesterday">Hier</string>
     <string name="history_row_bfyesterday">Avant-hier</string>
     <string name="history_row_weekago">Il y a une semaine</string>
+    <string name="three">trois</string>
+    <string name="four">quatre</string>
+    <string name="five">cinq</string>
+    <string name="six">six</string>
 </resources>
