@@ -21,9 +21,11 @@ import android.widget.ImageButton;
 
 import com.hernandez.mickael.moodtracker.R;
 import com.hernandez.mickael.moodtracker.model.HistoryOpenHelper;
+import com.hernandez.mickael.moodtracker.model.Mood;
 import com.hernandez.mickael.moodtracker.view.VerticalViewPager;
 
 import java.util.Calendar;
+import java.util.Date;
 
 /** Main activity */
 public class MainActivity extends FragmentActivity {
@@ -84,6 +86,11 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 
         mSharedPrefs = getApplicationContext().getSharedPreferences(PREFERENCES_KEY, MODE_PRIVATE);
+
+        // If the mood has not been updated today, set the current mood to the default one
+        if(mHistory.isDaySaved(new Date()) < 0){
+            mSharedPrefs.edit().putInt(PREFERENCES_KEY_MOOD, Mood.DEFAULT_MOOD).apply();
+        }
 
         // Scheduling alarm to save mood everyday
         Calendar mResetTime = Calendar.getInstance();

@@ -21,6 +21,7 @@ public class DayMood {
     /** The comment */
     private String mComment;
 
+
     DayMood(){ // Constructor by default
         mMood = Mood.NORMAL;
         mDate = Calendar.getInstance().getTime(); // Today

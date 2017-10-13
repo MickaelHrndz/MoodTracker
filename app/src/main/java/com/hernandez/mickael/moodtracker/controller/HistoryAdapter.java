@@ -43,12 +43,13 @@ class HistoryAdapter extends ArrayAdapter<DayMood> {
         final DayMood dm = getItem(position);
 
         v.setBackgroundColor(ContextCompat.getColor(getContext(), dm.getMood().getColor())); // Background color of the mood
-        Date today = Calendar.getInstance().getTime();
+        Calendar today = Calendar.getInstance();
+        today.set(Calendar.HOUR_OF_DAY, 24);
         TextView text = (TextView) v.findViewById(R.id.row_textview);
         ImageView img = (ImageView) v.findViewById(R.id.row_imageview);
 
         if (text != null) {
-            long daysAgo = DAYS.convert(today.getTime() - dm.getDate().getTime(), MILLISECONDS);
+            long daysAgo = DAYS.convert(today.getTimeInMillis() - dm.getDate().getTime(), MILLISECONDS);
             String str;
             switch((int)daysAgo){
                 case 0:

@@ -127,7 +127,7 @@ public class HistoryOpenHelper extends SQLiteOpenHelper {
     }
 
     /** Returns -1 if not found, or the id */
-    private int isDaySaved(Date pDate){
+    public int isDaySaved(Date pDate){
         String selectQuery = "SELECT  * FROM " + HISTORY_TABLE_NAME;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
