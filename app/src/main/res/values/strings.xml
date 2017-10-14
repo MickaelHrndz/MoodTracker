@@ -13,4 +13,5 @@
     <string name="ok">OK</string>
     <string name="six">six</string>
     <string name="three">three</string>
+    <string name="comment_too_long">Your comment cannot exceed %d characters.</string>
 </resources>

@@ -18,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.hernandez.mickael.moodtracker.R;
 import com.hernandez.mickael.moodtracker.model.HistoryOpenHelper;
@@ -32,6 +33,9 @@ public class MainActivity extends FragmentActivity {
 
     /** The number of pages (moods) to show */
     public static final int NUM_PAGES = 5;
+
+    /** Maximum number of characters in a comment */
+    public static final int MAX_CHAR_COMMENT = 256;
 
     /** History activity code for the intent */
     public static final int HISTORY_ACTIVITY_REQUEST_CODE = 1;
@@ -113,7 +117,11 @@ public class MainActivity extends FragmentActivity {
         mBuilder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 // User clicked OK button
-                mHistory.updateComment(mCommentEditText.getText().toString()); // updates today's mood comment
+                if(mCommentEditText.getText().length() <= MAX_CHAR_COMMENT) {
+                    mHistory.updateComment(mCommentEditText.getText().toString()); // updates today's mood comment
+                } else {
+                    Toast.makeText(getApplicationContext(), String.format(getString(R.string.comment_too_long), MAX_CHAR_COMMENT), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         mBuilder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

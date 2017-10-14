@@ -12,4 +12,5 @@
     <string name="four">quatre</string>
     <string name="five">cinq</string>
     <string name="six">six</string>
+    <string name="comment_too_long">Votre commentaire ne peut dépasser %d caractères.</string>
 </resources>
